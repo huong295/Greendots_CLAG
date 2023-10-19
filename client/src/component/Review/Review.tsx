@@ -23,7 +23,7 @@ const Review: React.FC<ReviewProps> = ({ setReviews, campaignID }) =>{
     const onFinish = async (values: any) => {
         try {
             values['campaignID'] = campaignID;
-            values['userID'] = auth.userID;
+            values['userID'] = localStorage.getItem('userID');
             if (values.comment.length > 190) {
                 return (
                     message.error('You can only write within 190 characters.')

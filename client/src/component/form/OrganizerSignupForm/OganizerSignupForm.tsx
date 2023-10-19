@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Form, Input, message, Modal } from 'antd';
 import { useOrgan } from '../../../contexts/OrganizerContext';
-import { useAuth } from '../../../auth/AuthContext'
 import './styles.css'
 import axios from 'axios';
 
@@ -17,7 +16,6 @@ const OrganizerSignupForm = () => {
 
     // Create campaign modal
     const {showOrganizerSignupForm, setShowOrganizerSignupForm, setOrganizerID} = useOrgan();
-    const auth = useAuth();
 
     const handleOk = () => {
         form.submit()
@@ -34,7 +32,7 @@ const OrganizerSignupForm = () => {
         console.log(values)
         values = {
             ...values,
-            userID: auth.userID,
+            userID: localStorage.getItem('userID'),
         }
         axios.post(`${API_ENDPOINT}/create-organizer`, values)
             .then((result) => {

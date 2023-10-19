@@ -8,7 +8,7 @@ import {
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import dayjs, { Dayjs } from 'dayjs';
+import { Dayjs } from 'dayjs';
 
 import { useAuth } from "../auth/AuthContext";
 import { useOrgan } from "../contexts/OrganizerContext";
@@ -149,25 +149,25 @@ export default function Home() {
         var customChangedCampaigns = [... response.data];
 
         if (dateResult) {
-        // Format Date
-        let date = dateResult[0] as any;
-        let offset = date?.$d.getTimezoneOffset()
-        let customDate = new Date(date?.$d.getTime() - (offset*60*1000))
-        const startDate = customDate.toISOString().replace('T', ' ').substring(0, 10)
+          // Format Date
+          let date = dateResult[0] as any;
+          let offset = date?.$d.getTimezoneOffset()
+          let customDate = new Date(date?.$d.getTime() - (offset*60*1000))
+          const startDate = customDate.toISOString().replace('T', ' ').substring(0, 10)
 
-        date = dateResult[1]
-        offset = date?.$d.getTimezoneOffset()
-        customDate = new Date(date?.$d.getTime() - (offset*60*1000))
-        const endDate = customDate.toISOString().replace('T', ' ').substring(0, 10)
+          date = dateResult[1]
+          offset = date?.$d.getTimezoneOffset()
+          customDate = new Date(date?.$d.getTime() - (offset*60*1000))
+          const endDate = customDate.toISOString().replace('T', ' ').substring(0, 10)
 
-        // Filter the campaigns
-        customChangedCampaigns = customChangedCampaigns.filter(campaign => 
-          dayjs(startDate).isAfter(campaign.startDate)
-          && dayjs(endDate).isBefore(campaign.endDate)
-        );
+          // Filter the campaigns
+          customChangedCampaigns = customChangedCampaigns.filter(campaign =>
+            endDate >= campaign.startDate.substring(0,10) 
+            && startDate <= campaign.endDate.substring(0,10)
+          );
         }
 
-        if (searchResult) {
+        if (searchResult && Object.keys(searchResult).length) {
           const customSearchResult = {lat: searchResult.lat, lng: searchResult.lon};
           customChangedCampaigns.sort((a, b) => 
             calculateEuclideanDistance({lat: a.lat, lng: a.long}, customSearchResult) - calculateEuclideanDistance({lat: b.lat, lng: b.long}, customSearchResult));
@@ -176,7 +176,7 @@ export default function Home() {
         // 
         setCampaigns(response.data);
         setChangedCampaigns(customChangedCampaigns);
-        setSearchResult(null);
+        // setSearchResult(null);
         setHiddenClass("");
       })
       .catch((error) => {
